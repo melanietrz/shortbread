@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en" data-palette="oxblood" data-font="bagel" data-pattern="blocks" data-scrolltext="sweep" data-photo="retro" data-grain="on">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Order — Good Crumb Shortbread</title>
+<meta name="description" content="Preorder salty dark chocolate shortbread by the pound for weekly pickup or your next party." />
+<script>
+  // Apply design choices saved from the landing page's tweaks panel before first paint.
+  try {
+    const t = JSON.parse(localStorage.getItem('gc-tweaks') || '{}');
+    for (const [k, v] of Object.entries(t)) if (k !== 'name') document.documentElement.dataset[k] = v;
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bagel+Fat+One&family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Instrument+Serif:ital@0;1&family=Pirata+One&family=Rubik+Mono+One&family=Yellowtail&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+/* ============ ORDER PAGE ============ */
+.o-hero{padding:clamp(40px,6vw,80px) 0 clamp(30px,4vw,50px);position:relative;overflow:hidden}
+.o-hero .wrap{position:relative}
+.o-back{display:inline-flex;gap:8px;align-items:center;text-decoration:none;margin-bottom:26px}
+.o-back:hover{color:var(--hot)}
+.o-title{font-size:calc(clamp(60px,10vw,160px) * var(--ds));color:var(--primary)}
+[data-palette="night"] .o-title{color:var(--soft)}
+.o-title .script{font-size:.62em;color:var(--hot);text-transform:none;letter-spacing:0;display:inline-block;transform:rotate(-6deg);margin-left:.15em}
+.o-lede{max-width:34em;font-size:clamp(17px,1.4vw,20px);margin-top:22px}
+.o-hero .sticker-lg{position:absolute;right:clamp(16px,4vw,48px);top:0;width:clamp(110px,12vw,160px);transform:rotate(10deg)}
+@media (max-width:700px){.o-hero .sticker-lg{display:none}}
+
+.o-layout{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:clamp(24px,4vw,56px);align-items:start;padding-bottom:clamp(70px,9vw,130px)}
+@media (max-width:980px){.o-layout{grid-template-columns:1fr}}
+
+/* steps */
+.o-step{min-width:0;border:3px solid var(--ink);border-radius:22px;padding:clamp(22px,3vw,36px);margin-bottom:22px;background:var(--paper);position:relative}
+.o-step legend{display:contents}
+.o-step__head{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.o-step__num{width:44px;height:44px;flex:none;border-radius:50%;background:var(--primary);color:var(--on-primary);display:grid;place-items:center;font-family:var(--display);text-transform:var(--display-case);font-size:calc(22px * var(--ds));border:2px solid var(--ink)}
+.o-step__title{font-family:var(--serif);font-size:clamp(28px,2.8vw,40px);line-height:1}
+.o-step__title em{font-style:italic}
+.o-hint{font-size:14px;opacity:.8;margin-top:12px}
+.o-hint b{font-weight:700}
+
+/* choice cards */
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:560px){.choices{grid-template-columns:1fr}}
+.choice{position:relative;display:block;cursor:pointer;border:2px solid var(--ink);border-radius:16px;padding:20px 20px 18px;transition:transform .2s cubic-bezier(.3,1.6,.5,1),background .2s,color .2s;overflow:hidden}
+.choice input{position:absolute;opacity:0;pointer-events:none}
+.choice:hover{transform:rotate(-1deg)}
+.choice .c-title{font-family:var(--display);text-transform:var(--display-case);font-size:calc(30px * var(--ds));line-height:.95;display:block;margin:6px 0 8px}
+.choice .c-sub{font-size:14px;display:block}
+.choice .c-check{position:absolute;right:14px;top:14px;width:26px;height:26px;border-radius:50%;border:2px solid currentColor;display:grid;place-items:center;font-size:14px}
+.choice .c-check::after{content:"✓";opacity:0}
+.choice:has(input:checked){background:var(--primary);color:var(--on-primary);box-shadow:6px 6px 0 var(--ink)}
+.choice:has(input:checked) .c-check{background:var(--pop);color:#1f1a12;border-color:var(--ink)}
+.choice:has(input:checked) .c-check::after{opacity:1}
+.choice:has(input:focus-visible){outline:3px solid var(--hot);outline-offset:3px}
+.choice--party:has(input:checked){background:var(--soft);color:#2a0b0b}
+
+/* pills (dates, quick amounts) */
+.pills{display:flex;flex-wrap:wrap;gap:10px}
+.pill{position:relative;cursor:pointer}
+.pill input{position:absolute;opacity:0;pointer-events:none}
+.pill span{display:flex;flex-direction:column;align-items:flex-start;border:2px solid var(--ink);border-radius:14px;padding:10px 16px;transition:background .15s,color .15s,transform .2s}
+.pill span b{font-family:var(--display);text-transform:var(--display-case);font-weight:400;font-size:calc(22px * var(--ds));line-height:1}
+.pill span small{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;margin-top:4px;opacity:.8}
+.pill:hover span{transform:translateY(-2px)}
+.pill input:checked + span{background:var(--ink);color:var(--paper)}
+.pill input:focus-visible + span{outline:3px solid var(--hot);outline-offset:3px}
+.pill--sm span{border-radius:999px;padding:7px 14px;flex-direction:row}
+.pill--sm span b{font-size:calc(17px * var(--ds))}
+
+/* amount stepper */
+.amount{display:flex;align-items:center;gap:clamp(14px,2vw,26px);flex-wrap:wrap;margin-bottom:18px}
+.stepper{display:flex;align-items:center;border:3px solid var(--ink);border-radius:999px;overflow:hidden;background:var(--pop);color:#1f1a12}
+.stepper button{width:58px;height:72px;border:0;background:transparent;font-family:var(--display);font-size:34px;line-height:1;cursor:pointer;color:inherit}
+.stepper button:hover:not(:disabled){background:color-mix(in srgb,#1f1a12 12%,transparent)}
+.stepper button:disabled{opacity:.3;cursor:not-allowed}
+.stepper output{min-width:150px;text-align:center;font-family:var(--display);text-transform:var(--display-case);font-size:calc(48px * var(--ds));line-height:1;border-left:3px solid var(--ink);border-right:3px solid var(--ink);padding:10px 8px;color:#5e0f14}
+.stepper output small{font-family:var(--script);font-size:26px;text-transform:none;color:#1f1a12;margin-left:4px}
+.amount__meta{font-family:var(--serif);font-style:italic;font-size:clamp(22px,2vw,28px);line-height:1.15}
+.amount__meta span{display:block;font-family:var(--mono);font-style:normal;font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.75;margin-top:6px}
+
+/* fields */
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fields .full{grid-column:1/-1}
+@media (max-width:560px){.fields{grid-template-columns:1fr}}
+.field label,.field .flabel{display:block;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+.field label i{font-style:normal;color:var(--hot)}
+.field input,.field select,.field textarea{width:100%;font:inherit;font-size:16px;color:var(--ink);background:color-mix(in srgb,var(--paper) 70%,var(--cream));border:2px solid var(--ink);border-radius:12px;padding:12px 14px;outline:none;transition:box-shadow .15s}
+.field textarea{min-height:110px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{box-shadow:4px 4px 0 var(--hot)}
+.field .err{display:none;font-size:13px;color:var(--hot);margin-top:6px;font-weight:500}
+.field.invalid input,.field.invalid select{border-color:var(--hot);box-shadow:4px 4px 0 var(--hot)}
+.field.invalid .err{display:block}
+[data-palette="night"] .field input,[data-palette="night"] .field select,[data-palette="night"] .field textarea{color-scheme:dark}
+
+.agree{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;cursor:pointer;font-size:15px;padding:16px 18px;border:2px dashed var(--ink);border-radius:12px}
+.agree input{width:24px;height:24px;accent-color:var(--primary);margin-top:1px;cursor:pointer}
+.agree.invalid{border-color:var(--hot);border-style:solid;box-shadow:4px 4px 0 var(--hot)}
+
+[hidden]{display:none !important}
+
+/* summary / receipt */
+.receipt{position:sticky;top:92px;border:3px solid var(--ink);border-radius:22px;overflow:hidden;background:var(--paper);box-shadow:10px 10px 0 var(--ink)}
+@media (max-width:980px){.receipt{position:static}}
+.receipt__band{height:30px;background:repeating-linear-gradient(90deg,var(--primary) 0 30px,var(--soft) 30px 60px);border-bottom:3px solid var(--ink)}
+.receipt__body{padding:26px 26px 22px}
+.receipt h2{font-size:calc(42px * var(--ds));color:var(--primary);margin-bottom:4px}
+[data-palette="night"] .receipt h2{color:var(--soft)}
+.receipt .label{opacity:.75}
+.r-lines{list-style:none;margin:20px 0 6px;border-top:2px solid var(--ink)}
+.r-lines li{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px dashed color-mix(in srgb,var(--ink) 45%,transparent);font-size:15px}
+.r-lines li > span:first-child{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;padding-top:2px;flex:none}
+.r-lines li > span:last-child{text-align:right;font-weight:500}
+.r-lines .muted{opacity:.5;font-weight:400}
+.r-total{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0 18px}
+.r-total span{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.r-total b{font-family:var(--display);text-transform:var(--display-case);font-weight:400;font-size:calc(46px * var(--ds));line-height:1;color:var(--hot)}
+.receipt .btn{width:100%;justify-content:center;font-size:14px;padding:1.1em 1.5em}
+.r-note{font-size:13px;opacity:.75;margin-top:14px;text-align:center}
+.r-errors{display:none;background:var(--hot);color:#fff;border-radius:10px;padding:10px 14px;font-size:14px;margin-bottom:12px}
+.r-errors.show{display:block}
+
+/* confirmation */
+.done{text-align:center;padding:clamp(50px,7vw,100px) 0 clamp(80px,10vw,140px)}
+.done .burst{width:clamp(140px,16vw,200px);margin:0 auto 26px;animation:spin 30s linear infinite}
+.done h2{font-size:calc(clamp(56px,9vw,140px) * var(--ds));color:var(--primary)}
+[data-palette="night"] .done h2{color:var(--soft)}
+.done h2 .script{color:var(--hot);text-transform:none;font-size:.6em;display:inline-block;transform:rotate(-6deg)}
+.done p{max-width:32em;margin:20px auto 0;font-size:clamp(17px,1.4vw,20px)}
+.done .ticket{display:inline-block;margin:34px auto 0;text-align:left;border:3px solid var(--ink);border-radius:18px;padding:22px 26px;min-width:min(420px,100%);background:var(--paper);box-shadow:8px 8px 0 var(--ink);transform:rotate(-1.5deg)}
+.done .ticket .r-lines{margin-top:12px}
+.done .ref{font-family:var(--mono);letter-spacing:.14em}
+.done .preview{display:inline-block;margin-top:28px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;background:var(--pop);color:#1f1a12;padding:8px 14px;border-radius:999px;border:2px solid var(--ink)}
+.done .actions{margin-top:30px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track">
+    <span>Sold by the pound</span><i>✺</i><span>Preorder by Wednesday</span><i>✺</i><span>Pickup Saturdays</span><i>✺</i><span>Party orders welcome</span><i>✺</i><span>Baked in a home kitchen</span><i>✺</i><span>Flaky salt, no apologies</span><i>✺</i>
+    <span>Sold by the pound</span><i>✺</i><span>Preorder by Wednesday</span><i>✺</i><span>Pickup Saturdays</span><i>✺</i><span>Party orders welcome</span><i>✺</i><span>Baked in a home kitchen</span><i>✺</i><span>Flaky salt, no apologies</span><i>✺</i>
+  </div>
+</div>
+
+<nav class="nav">
+  <div class="wrap">
+    <a href="index.html" class="logo" data-name>Good Crumb</a>
+    <ul>
+      <li><a href="index.html#cookie">The cookie</a></li>
+      <li><a href="index.html#order">How it works</a></li>
+      <li><a href="index.html#kitchen">Home kitchen</a></li>
+    </ul>
+    <a href="index.html" class="btn ghost">← Back</a>
+  </div>
+</nav>
+
+<main id="orderView">
+  <header class="o-hero">
+    <div class="wrap">
+      <a href="index.html" class="o-back label">← Back to the cookie</a>
+      <h1 class="display o-title">Get a pound <span class="script">(or five)</span></h1>
+      <p class="o-lede">Salty dark chocolate shortbread, baked to order. Pick how you want it, how much, and when. You'll get a confirmation with payment details. Nothing is charged on this page.</p>
+      <svg class="sticker-lg" viewBox="0 0 100 100" aria-hidden="true"><path fill="var(--pop)" stroke="var(--ink)" stroke-width="2.5" d="M50 4 61 18 78 12 80 30 96 38 86 52 94 68 76 72 72 90 56 84 44 96 36 80 18 84 20 66 4 58 16 46 8 30 26 26 30 8 44 16Z"/><text x="50" y="47" text-anchor="middle" font-family="DM Mono" font-size="9.5" letter-spacing="1" fill="#1f1a12">BAKED</text><text x="50" y="59" text-anchor="middle" font-family="DM Mono" font-size="9.5" letter-spacing="1" fill="#1f1a12">TO ORDER</text></svg>
+    </div>
+  </header>
+
+  <div class="band" aria-hidden="true"><div class="r r1"></div><div class="r r2"></div><div class="r r3"></div><div class="r r4"></div></div>
+
+  <div class="wrap" style="padding-top:clamp(40px,5vw,70px)">
+    <form class="o-layout" id="orderForm" novalidate>
+      <div>
+        <!-- STEP 1 -->
+        <fieldset class="o-step">
+          <legend><div class="o-step__head"><span class="o-step__num">1</span><span class="o-step__title">What kind of <em>order?</em></span></div></legend>
+          <div class="choices">
+            <label class="choice">
+              <input type="radio" name="type" value="pickup" checked />
+              <span class="c-check"></span>
+              <span class="label">Every week</span>
+              <span class="c-title">Weekly pickup</span>
+              <span class="c-sub">Preorder by Wednesday, pick up Saturday. 1 lb minimum.</span>
+            </label>
+            <label class="choice choice--party">
+              <input type="radio" name="type" value="event" />
+              <span class="c-check"></span>
+              <span class="label">Parties &amp; events</span>
+              <span class="c-title">Party order</span>
+              <span class="c-sub">Pick your date, 7 days notice. 2 lb minimum, boxed &amp; tied.</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- STEP 2 -->
+        <fieldset class="o-step">
+          <legend><div class="o-step__head"><span class="o-step__num">2</span><span class="o-step__title">How <em>much?</em></span></div></legend>
+          <div class="amount">
+            <div class="stepper">
+              <button type="button" id="minus" aria-label="Remove half a pound">−</button>
+              <output id="lbsOut" aria-live="polite">1<small>lb</small></output>
+              <button type="button" id="plus" aria-label="Add half a pound">+</button>
+            </div>
+            <div class="amount__meta"><div id="cookieCount">about 16 cookies</div><span id="amountQuip">A very reasonable treat.</span></div>
+          </div>
+          <div class="pills" id="quickLbs" role="group" aria-label="Quick amounts"></div>
+          <p class="o-hint" id="amountHint">Half-pound steps. Need more than <b id="maxLbs">5</b> lb? Leave a note below.</p>
+        </fieldset>
+
+        <!-- STEP 3 -->
+        <fieldset class="o-step">
+          <legend><div class="o-step__head"><span class="o-step__num">3</span><span class="o-step__title" id="whenTitle">Which <em>Saturday?</em></span></div></legend>
+
+          <div id="pickupWhen">
+            <div class="pills" id="pickupDates" role="radiogroup" aria-label="Pickup date"></div>
+            <p class="o-hint">Pickup is <b>10am–2pm</b> from the porch in [Neighborhood]. The exact address comes with your confirmation.</p>
+          </div>
+
+          <div id="eventWhen" hidden>
+            <div class="fields">
+              <div class="field">
+                <label for="eventDate">Pickup date <i>*</i></label>
+                <input type="date" id="eventDate" name="eventDate" />
+                <div class="err">Pick a date at least 7 days from today.</div>
+              </div>
+              <div class="field">
+                <label for="eventTime">Pickup window <i>*</i></label>
+                <select id="eventTime" name="eventTime">
+                  <option value="">Choose a window</option>
+                  <option>Morning, 9am–12pm</option>
+                  <option>Afternoon, 12–3pm</option>
+                  <option>Evening, 3–6pm</option>
+                </select>
+                <div class="err">Choose a pickup window.</div>
+              </div>
+              <div class="field full">
+                <span class="flabel">Packaging</span>
+                <div class="pills" role="radiogroup" aria-label="Packaging">
+                  <label class="pill pill--sm"><input type="radio" name="packaging" value="One big box" checked /><span><b>One big box</b></span></label>
+                  <label class="pill pill--sm"><input type="radio" name="packaging" value="Half-pound favor boxes" /><span><b>½ lb favor boxes</b></span></label>
+                </div>
+              </div>
+              <div class="field full">
+                <label for="occasion">What's the occasion?</label>
+                <input type="text" id="occasion" name="occasion" placeholder="Birthday, office party, Tuesday…" />
+              </div>
+            </div>
+            <p class="o-hint">Party orders are pickup only for now. [Confirm whether you offer delivery.]</p>
+          </div>
+        </fieldset>
+
+        <!-- STEP 4 -->
+        <fieldset class="o-step">
+          <legend><div class="o-step__head"><span class="o-step__num">4</span><span class="o-step__title">Who's it <em>for?</em></span></div></legend>
+          <div class="fields">
+            <div class="field">
+              <label for="name">Name <i>*</i></label>
+              <input type="text" id="name" name="name" autocomplete="name" required />
+              <div class="err">We need a name for the box.</div>
+            </div>
+            <div class="field">
+              <label for="phone">Phone</label>
+              <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="For pickup-day texts" />
+            </div>
+            <div class="field full">
+              <label for="email">Email <i>*</i></label>
+              <input type="email" id="email" name="email" autocomplete="email" required />
+              <div class="err">Enter an email so we can send your confirmation.</div>
+            </div>
+            <div class="field full">
+              <label for="notes">Notes</label>
+              <textarea id="notes" name="notes" placeholder="Allergies, bigger orders, a message for the box…"></textarea>
+            </div>
+            <label class="agree full" id="agreeWrap">
+              <input type="checkbox" id="agree" name="agree" required />
+              <span>I understand these cookies are made in a home kitchen that isn't licensed or inspected by the health department, and that they contain <b>wheat, milk, egg and soy</b>.</span>
+            </label>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- SUMMARY -->
+      <aside class="receipt" aria-label="Order summary">
+        <div class="receipt__band"></div>
+        <div class="receipt__body">
+          <span class="label">Your order</span>
+          <h2 class="display">The Tally</h2>
+          <ul class="r-lines" id="summaryLines"></ul>
+          <div class="r-total"><span>Estimated total</span><b id="total">$—</b></div>
+          <div class="r-errors" id="formErrors" role="alert"></div>
+          <button type="submit" class="btn">Send my order <span class="arr">→</span></button>
+          <p class="r-note">No payment taken here. We'll confirm by email within a day.</p>
+        </div>
+      </aside>
+    </form>
+  </div>
+</main>
+
+<!-- CONFIRMATION -->
+<section class="done" id="doneView" hidden tabindex="-1">
+  <div class="wrap">
+    <svg class="burst" viewBox="0 0 100 100" aria-hidden="true"><path fill="var(--soft)" stroke="var(--ink)" stroke-width="2" d="M50 4 61 18 78 12 80 30 96 38 86 52 94 68 76 72 72 90 56 84 44 96 36 80 18 84 20 66 4 58 16 46 8 30 26 26 30 8 44 16Z"/><circle cx="50" cy="50" r="22" fill="var(--primary)" stroke="var(--ink)" stroke-width="2"/><text x="50" y="55" text-anchor="middle" font-family="Yellowtail" font-size="16" fill="var(--on-primary)">yum</text></svg>
+    <h2 class="display">You're on <span class="script">the list</span></h2>
+    <p id="doneMsg">We'll email you within a day to confirm.</p>
+    <div class="ticket">
+      <span class="label">Order <span class="ref" id="ref"></span></span>
+      <ul class="r-lines" id="doneLines"></ul>
+    </div>
+    <div><span class="preview">Preview only: orders aren't sent anywhere yet</span></div>
+    <div class="actions">
+      <a href="index.html" class="btn">Back to the cookie <span class="arr">→</span></a>
+      <button type="button" class="btn ghost" id="another">Place another order</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap row">
+    <div class="label">Salty dark chocolate shortbread · by the pound · [City]</div>
+    <div class="label"><a href="index.html">Home</a><a href="#">Instagram</a><a href="#">Email</a></div>
+  </div>
+  <div class="wordmark" data-name>Good Crumb</div>
+</footer>
+
+<script>
+/* ---------- config (keep in sync with index.html) ---------- */
+const PRICE_PER_LB = null;     // e.g. 24 — null shows "$—"
+const COOKIES_PER_LB = 16;
+const PICKUP_DAY = 6;          // Saturday
+const DEADLINE_DAY = 3;        // Wednesday
+const DEADLINE_HOUR = 20;      // 8pm
+const EVENT_NOTICE_DAYS = 7;
+const RULES = { pickup: { min: 1, max: 5 }, event: { min: 2, max: 20 } };
+
+/* ---------- name from tweaks ---------- */
+try {
+  const t = JSON.parse(localStorage.getItem('gc-tweaks') || '{}');
+  if (t.name) document.querySelectorAll('[data-name]').forEach(el => el.textContent = t.name);
+} catch (e) {}
+
+const $ = id => document.getElementById(id);
+const form = $('orderForm');
+const fmtDate = d => d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+const fmtLbs = n => (n % 1 ? n.toFixed(1) : String(n));
+const money = n => PRICE_PER_LB == null ? '$—' : '$' + n.toFixed(2).replace(/\.00$/, '');
+
+/* ---------- state ---------- */
+const params = new URLSearchParams(location.search);
+const state = {
+  type: params.get('type') === 'event' ? 'event' : 'pickup',
+  lbs: parseFloat(params.get('lbs')) || null,
+  pickupDate: null,
+};
+
+/* ---------- pickup dates: next 4 Saturdays whose Wednesday deadline hasn't passed ---------- */
+function upcomingPickups(n = 4) {
+  const now = new Date(), out = [];
+  for (let i = 0; out.length < n && i < 60; i++) {
+    const p = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
+    if (p.getDay() !== PICKUP_DAY) continue;
+    const back = (PICKUP_DAY - DEADLINE_DAY + 7) % 7;
+    const dl = new Date(p.getFullYear(), p.getMonth(), p.getDate() - back, DEADLINE_HOUR);
+    if (dl > now) out.push({ date: p, deadline: dl });
+  }
+  return out;
+}
+const pickups = upcomingPickups();
+$('pickupDates').innerHTML = pickups.map((p, i) => `
+  <label class="pill"><input type="radio" name="pickupDate" value="${p.date.toISOString().slice(0,10)}" ${i === 0 ? 'checked' : ''} />
+  <span><b>${fmtDate(p.date)}</b><small>Order by ${p.deadline.toLocaleDateString('en-US',{weekday:'short'})} ${p.deadline.getMonth()+1}/${p.deadline.getDate()}</small></span></label>`).join('');
+
+/* event date min */
+const minEvent = new Date(); minEvent.setDate(minEvent.getDate() + EVENT_NOTICE_DAYS);
+const isoLocal = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+$('eventDate').min = isoLocal(minEvent);
+
+/* ---------- amount ---------- */
+function clampLbs() {
+  const r = RULES[state.type];
+  if (state.lbs == null) state.lbs = r.min;
+  state.lbs = Math.min(r.max, Math.max(r.min, Math.round(state.lbs * 2) / 2));
+}
+function renderQuick() {
+  const opts = state.type === 'pickup' ? [1, 2, 3, 5] : [2, 3, 5, 10];
+  $('quickLbs').innerHTML = opts.map(v => `<label class="pill pill--sm"><input type="radio" name="quick" value="${v}" ${v === state.lbs ? 'checked' : ''} /><span><b>${v} lb</b></span></label>`).join('');
+}
+$('quickLbs').addEventListener('change', e => { state.lbs = +e.target.value; render(); });
+$('minus').addEventListener('click', () => { state.lbs -= 0.5; render(); });
+$('plus').addEventListener('click', () => { state.lbs += 0.5; render(); });
+
+/* ---------- type ---------- */
+form.querySelectorAll('input[name=type]').forEach(r => {
+  r.checked = r.value === state.type;
+  r.addEventListener('change', () => { state.type = r.value; render(); });
+});
+
+/* ---------- order snapshot ---------- */
+function snapshot() {
+  const fd = new FormData(form);
+  const isEvent = state.type === 'event';
+  let when = '';
+  if (isEvent) {
+    const d = fd.get('eventDate');
+    when = d ? fmtDate(new Date(d + 'T12:00')) + (fd.get('eventTime') ? ' · ' + fd.get('eventTime').split(',')[0] : '') : '';
+  } else {
+    const d = fd.get('pickupDate');
+    when = d ? fmtDate(new Date(d + 'T12:00')) + ' · 10am–2pm' : '';
+  }
+  return {
+    type: state.type,
+    lbs: state.lbs,
+    cookies: Math.round(state.lbs * COOKIES_PER_LB),
+    when,
+    packaging: isEvent ? fd.get('packaging') : 'Paper bag, tied with string',
+    occasion: isEvent ? (fd.get('occasion') || '').trim() : '',
+    name: (fd.get('name') || '').trim(),
+    email: (fd.get('email') || '').trim(),
+    phone: (fd.get('phone') || '').trim(),
+    notes: (fd.get('notes') || '').trim(),
+    total: PRICE_PER_LB == null ? null : state.lbs * PRICE_PER_LB,
+  };
+}
+function lines(o) {
+  const esc = s => s.replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+  const rows = [
+    ['Order', o.type === 'event' ? 'Party order' : 'Weekly pickup'],
+    ['Amount', `${fmtLbs(o.lbs)} lb · ~${o.cookies} cookies`],
+    ['When', o.when || '<span class="muted">Pick a date</span>'],
+    ['Packaging', esc(o.packaging)],
+  ];
+  if (o.occasion) rows.push(['For', esc(o.occasion)]);
+  if (o.name) rows.push(['Name', esc(o.name)]);
+  rows.push(['Price', PRICE_PER_LB == null ? '$— / lb' : `${money(PRICE_PER_LB)} / lb`]);
+  return rows.map(([k, v]) => `<li><span>${k}</span><span>${v}</span></li>`).join('');
+}
+
+/* ---------- render ---------- */
+function render() {
+  clampLbs();
+  const r = RULES[state.type], isEvent = state.type === 'event';
+  $('lbsOut').innerHTML = `${fmtLbs(state.lbs)}<small>lb</small>`;
+  $('minus').disabled = state.lbs <= r.min;
+  $('plus').disabled = state.lbs >= r.max;
+  $('maxLbs').textContent = r.max;
+  const cookies = Math.round(state.lbs * COOKIES_PER_LB);
+  $('cookieCount').textContent = `about ${cookies} cookies`;
+  $('amountQuip').textContent = state.lbs <= 1 ? 'A very reasonable treat.'
+    : state.lbs <= 2 ? 'Enough to share. Probably.'
+    : state.lbs <= 5 ? `Feeds ${Math.floor(cookies / 2)}–${cookies} happy people.`
+    : 'Main-character energy.';
+  renderQuick();
+  $('pickupWhen').hidden = isEvent;
+  $('eventWhen').hidden = !isEvent;
+  $('whenTitle').innerHTML = isEvent ? 'When\'s the <em>party?</em>' : 'Which <em>Saturday?</em>';
+  const o = snapshot();
+  $('summaryLines').innerHTML = lines(o);
+  $('total').textContent = money(o.total ?? 0);
+}
+form.addEventListener('input', e => {
+  if (e.target.closest('.field')) e.target.closest('.field').classList.remove('invalid');
+  if (e.target.id === 'agree') $('agreeWrap').classList.remove('invalid');
+  render();
+});
+form.addEventListener('change', render);
+
+/* ---------- validation & submit ---------- */
+function validate() {
+  const bad = [];
+  const mark = (id, ok, msg) => { const f = $(id).closest('.field'); f.classList.toggle('invalid', !ok); if (!ok) bad.push([id, msg]); };
+  if (state.type === 'event') {
+    const v = $('eventDate').value;
+    mark('eventDate', v && v >= $('eventDate').min, 'pickup date');
+    mark('eventTime', !!$('eventTime').value, 'pickup window');
+  } else if (!form.querySelector('input[name=pickupDate]:checked')) {
+    bad.push(['pickupDates', 'pickup date']);
+  }
+  mark('name', $('name').value.trim().length > 0, 'name');
+  mark('email', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('email').value.trim()), 'email');
+  const agreed = $('agree').checked;
+  $('agreeWrap').classList.toggle('invalid', !agreed);
+  if (!agreed) bad.push(['agree', 'home kitchen notice']);
+  return bad;
+}
+
+/* Hook for the real backend later (Square, Shopify, a form service, etc.). */
+async function submitOrder(order) {
+  console.info('[order preview]', order);
+  return { ref: 'GC-' + Math.random().toString(36).slice(2, 7).toUpperCase() };
+}
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const bad = validate();
+  const errBox = $('formErrors');
+  if (bad.length) {
+    errBox.textContent = 'Almost! Still need: ' + [...new Set(bad.map(b => b[1]))].join(', ') + '.';
+    errBox.classList.add('show');
+    const first = $(bad[0][0]);
+    first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (first.focus) setTimeout(() => first.focus({ preventScroll: true }), 350);
+    return;
+  }
+  errBox.classList.remove('show');
+  const order = snapshot();
+  const { ref } = await submitOrder(order);
+  $('ref').textContent = ref;
+  $('doneLines').innerHTML = lines(order) + `<li><span>Total</span><span>${money(order.total ?? 0)}</span></li>`;
+  $('doneMsg').textContent = `Thanks, ${order.name.split(' ')[0]}! We'll email ${order.email} within a day to confirm your order and payment details.`;
+  $('orderView').hidden = true;
+  $('doneView').hidden = false;
+  scrollTo({ top: 0, behavior: 'instant' });
+  $('doneView').focus({ preventScroll: true });
+  fitWordmark();
+});
+$('another').addEventListener('click', () => {
+  form.reset();
+  form.querySelectorAll('input[name=type]').forEach(r => r.checked = r.value === state.type);
+  const first = form.querySelector('input[name=pickupDate]'); if (first) first.checked = true;
+  $('doneView').hidden = true; $('orderView').hidden = false;
+  render(); scrollTo({ top: 0, behavior: 'instant' });
+});
+
+/* ---------- footer wordmark fit ---------- */
+const wm = document.querySelector('.wordmark');
+function fitWordmark() {
+  wm.style.fontSize = '100px'; wm.style.display = 'inline-block';
+  const w = wm.getBoundingClientRect().width, target = wm.parentElement.clientWidth * 0.96;
+  wm.style.display = ''; wm.style.fontSize = (100 * target / w) + 'px';
+}
+document.fonts.ready.then(fitWordmark);
+addEventListener('resize', fitWordmark);
+
+render();
+</script>
+</body>
+</html>
